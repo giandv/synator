@@ -1,13 +1,37 @@
+import base64
+
 import kopf
 import kubernetes
 import os
+import requests
 
 WATCH_NAMESPACE = os.getenv('WATCH_NAMESPACE', "")
-all_namespaces  = WATCH_NAMESPACE.split(',')
+API_ENDPOINT = os.getenv("API_ENDPOINT", "")
+API_KEY = os.getenv("API_KEY", "")
+all_namespaces = WATCH_NAMESPACE.split(',')
+
+
 def watch_namespace(namespace, **_):
     if WATCH_NAMESPACE == "" or namespace in all_namespaces:
         return True
     return False
+
+
+@kopf.on.create('', 'v1', 'secrets', annotations={'synator/watch': 'yes'}, when=watch_namespace)
+@kopf.on.update('', 'v1', 'secrets', annotations={'synator/watch': 'yes'}, when=watch_namespace)
+def update_secret_manager(body, meta, spec, status, old, new, diff, **kwargs):
+    api = kubernetes.client.CoreV1Api()
+    secret = api.read_namespaced_secret(meta.name, meta.namespace)
+    sec_data = secret.data
+    value = base64.b64decode(sec_data.strip().split()[1].translate(None, '}\''))
+    my_headers = {'Api-Key': f'Bearer {API_KEY}', 'Content-Type': 'application/json'}
+    my_body = {'name': secret.metadata.name, 'value': value, 'projectId': 'xtribeapp-1279'}
+    try:
+        response = requests.post(API_ENDPOINT + "/api/internal/secret/add-version", data=my_body, headers=my_headers)
+        response.raise_for_status()
+    except requests.exceptions.HTTPError as error:
+        print(error)
+
 
 @kopf.on.create('', 'v1', 'secrets', annotations={'synator/sync': 'yes'}, when=watch_namespace)
 @kopf.on.update('', 'v1', 'secrets', annotations={'synator/sync': 'yes'}, when=watch_namespace)
@@ -34,7 +58,7 @@ def update_secret(body, meta, spec, status, old, new, diff, **kwargs):
 
 @kopf.on.create('', 'v1', 'configmaps', annotations={'synator/sync': 'yes'}, when=watch_namespace)
 @kopf.on.update('', 'v1', 'configmaps', annotations={'synator/sync': 'yes'}, when=watch_namespace)
-def updateConfigMap(body, meta, spec, status, old, new, diff, **kwargs):
+def update_config_map(body, meta, spec, status, old, new, diff, **kwargs):
     api = kubernetes.client.CoreV1Api()
     namespace_response = api.list_namespace()
     namespaces = [nsa.metadata.name for nsa in namespace_response.items]
@@ -88,7 +112,7 @@ def parse_target_namespaces(meta, namespaces):
 
 
 @kopf.on.create('', 'v1', 'namespaces')
-def newNamespace(spec, name, meta, logger, **kwargs):
+def new_namespace(spec, name, meta, logger, **kwargs):
     api = kubernetes.client.CoreV1Api()
 
     try:
