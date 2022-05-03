@@ -35,11 +35,11 @@ def update_secret_manager(body, meta, spec, status, old, new, diff, **kwargs):
         name_secret_manager = secret.metadata.annotations[SYNATOR_REPLACE_IN]
         sec_key = secret.metadata.annotations[SYNATOR_REPLACE]
         sec_data = secret.data[sec_key]
-        value = base64.b64decode(sec_data.strip())
-        my_headers = {'Api-Key': f'Bearer {API_KEY}', 'Content-Type': 'application/json'}
+        value = base64.b64decode(sec_data.strip()).decode("utf-8")
+        my_headers = {'Api-Key': API_KEY, 'Content-Type': 'application/json'}
         my_body = {'name': name_secret_manager, 'value': value, 'projectId': PROJECT_ID}
         try:
-            response = requests.post(API_ENDPOINT + "/api/internal/secret/add-version", data=my_body,
+            response = requests.post(API_ENDPOINT + "/api/internal/secrets/add-version", json=my_body,
                                      headers=my_headers)
             response.raise_for_status()
         except requests.exceptions.HTTPError as error:
