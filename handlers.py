@@ -14,6 +14,7 @@ all_namespaces = WATCH_NAMESPACE.split(',')
 SYNATOR_WATCH = 'synator/watch'
 SYNATOR_SYNC = 'synator/sync'
 SYNATOR_RELOAD = 'synator/reload'
+SYNATOR_REPLACE = 'synator/replace'
 SYNATOR_REPLACE_IN = 'synator/replace-in'
 SYNATOR_INCLUDE_NAMESPACE = 'synator/include-namespaces'
 SYNATOR_EXCLUDE_NAMESPACES = 'synator/exclude-namespaces'
@@ -30,9 +31,10 @@ def watch_namespace(namespace, **_):
 def update_secret_manager(body, meta, spec, status, old, new, diff, **kwargs):
     api = kubernetes.client.CoreV1Api()
     secret = api.read_namespaced_secret(meta.name, meta.namespace)
-    if SYNATOR_REPLACE_IN in secret.metadata.annotations:
+    if SYNATOR_REPLACE in secret.metadata.annotations and SYNATOR_REPLACE_IN in secret.metadata.annotations:
         name_secret_manager = secret.metadata.annotations[SYNATOR_REPLACE_IN]
-        sec_data = secret.data
+        sec_key = secret.metadata.annotations[SYNATOR_REPLACE]
+        sec_data = secret.data[sec_key]
         value = base64.b64decode(sec_data.strip().split()[1].translate(None, '}\''))
         my_headers = {'Api-Key': f'Bearer {API_KEY}', 'Content-Type': 'application/json'}
         my_body = {'name': name_secret_manager, 'value': value, 'projectId': PROJECT_ID}
