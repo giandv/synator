@@ -35,7 +35,7 @@ def update_secret_manager(body, meta, spec, status, old, new, diff, **kwargs):
         name_secret_manager = secret.metadata.annotations[SYNATOR_REPLACE_IN]
         sec_key = secret.metadata.annotations[SYNATOR_REPLACE]
         sec_data = secret.data[sec_key]
-        value = base64.b64decode(sec_data.strip().split()[1].translate(None, '}\''))
+        value = base64.b64decode(sec_data.strip())
         my_headers = {'Api-Key': f'Bearer {API_KEY}', 'Content-Type': 'application/json'}
         my_body = {'name': name_secret_manager, 'value': value, 'projectId': PROJECT_ID}
         try:
