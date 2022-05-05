@@ -1,0 +1,22 @@
+stages:
+  - publish
+
+variables:
+  DOCKER_TLS_CERTDIR: "/certs"
+
+services:
+  - docker:19.03.12-dind
+
+before_script:
+  - docker info
+  - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
+
+
+jobPublishDocker:
+  stage: publish
+  image: docker:19.03.12
+  rules:
+    - if: '$CI_COMMIT_TAG =~ /^v?[0-9]+[.][0-9]+([.][0-9]+)?-ns-devops-synator/'
+  script:
+    - docker build -t registry.gitlab.com/xtribe/web/infrastructure/images/synator:latest .
+    - docker push registry.gitlab.com/xtribe/web/infrastructure/images/synator:latest
