@@ -62,13 +62,12 @@ def update_secret(body, meta, spec, status, old, new, diff, **kwargs):
     secret.metadata.uid = None
     for ns in parse_target_namespaces(meta, namespaces):
         secret.metadata.namespace = ns
-        # try to pull the Secret object then patch it, try creating it if we can't
+        # try to pull the Secret object then patch it
         try:
             api.read_namespaced_secret(meta.name, ns)
             api.patch_namespaced_secret(meta.name, ns, secret)
         except kubernetes.client.rest.ApiException as e:
             print(e.args)
-            api.create_namespaced_secret(ns, secret)
 
 
 @kopf.on.create('', 'v1', 'configmaps', annotations={SYNATOR_SYNC: 'yes'}, when=watch_namespace)
@@ -85,13 +84,12 @@ def update_config_map(body, meta, spec, status, old, new, diff, **kwargs):
     cfg.metadata.uid = None
     for ns in parse_target_namespaces(meta, namespaces):
         cfg.metadata.namespace = ns
-        # try to pull the ConfigMap object then patch it, try to create it if we can't
+        # try to pull the ConfigMap object then patch it
         try:
             api.read_namespaced_config_map(meta.name, ns)
             api.patch_namespaced_config_map(meta.name, ns, cfg)
         except kubernetes.client.rest.ApiException as e:
             print(e.args)
-            api.create_namespaced_config_map(ns, cfg)
 
 
 def parse_target_namespaces(meta, namespaces):
@@ -148,7 +146,6 @@ def new_namespace(spec, name, meta, logger, **kwargs):
                             secret.metadata.name, ns, secret)
                     except kubernetes.client.rest.ApiException as e:
                         print(e.args)
-                        api.create_namespaced_secret(ns, secret)
     except kubernetes.client.rest.ApiException as e:
         print("Exception when calling CoreV1Api->list_secret_for_all_namespaces: %s\n" % e)
 
