@@ -1,52 +1,20 @@
-import base64
-
 import kopf
 import kubernetes
 import os
-import requests
 
 WATCH_NAMESPACE = os.getenv('WATCH_NAMESPACE', "")
-API_ENDPOINT = os.getenv("API_ENDPOINT", "")
-API_KEY = os.getenv("API_KEY", "")
-PROJECT_ID = os.getenv("PROJECT_ID", "")
-all_namespaces = WATCH_NAMESPACE.split(',')
+all_namespaces  = WATCH_NAMESPACE.split(',')
 
-SYNATOR_WATCH = 'synator/watch'
-SYNATOR_SYNC = 'synator/sync'
-SYNATOR_RELOAD = 'synator/reload'
-SYNATOR_REPLACE = 'synator/replace'
-SYNATOR_REPLACE_IN = 'synator/replace-in'
-SYNATOR_INCLUDE_NAMESPACE = 'synator/include-namespaces'
-SYNATOR_EXCLUDE_NAMESPACES = 'synator/exclude-namespaces'
+SYNATOR_SYNC                = 'synator/sync'
+SYNATOR_RELOAD              = 'synator/reload'
+SYNATOR_INCLUDE_NAMESPACE   = 'synator/include-namespaces'
+SYNATOR_EXCLUDE_NAMESPACES  = 'synator/exclude-namespaces'
 
 
 def watch_namespace(namespace, **_):
     if WATCH_NAMESPACE == "" or namespace in all_namespaces:
         return True
     return False
-
-
-@kopf.on.create('', 'v1', 'secrets', annotations={SYNATOR_WATCH: 'yes'}, when=watch_namespace)
-@kopf.on.update('', 'v1', 'secrets', annotations={SYNATOR_WATCH: 'yes'}, when=watch_namespace)
-def update_secret_manager(body, meta, spec, status, old, new, diff, **kwargs):
-    api = kubernetes.client.CoreV1Api()
-    secret = api.read_namespaced_secret(meta.name, meta.namespace)
-    if SYNATOR_REPLACE in secret.metadata.annotations and SYNATOR_REPLACE_IN in secret.metadata.annotations:
-        name_secret_manager = secret.metadata.annotations[SYNATOR_REPLACE_IN]
-        sec_key = secret.metadata.annotations[SYNATOR_REPLACE]
-        sec_data = secret.data[sec_key]
-        value = base64.b64decode(sec_data.strip()).decode("utf-8")
-        my_headers = {'Api-Key': API_KEY, 'Content-Type': 'application/json'}
-        my_body = {'name': name_secret_manager, 'value': value, 'projectId': PROJECT_ID}
-        try:
-            response = requests.post(API_ENDPOINT + "/api/internal/secrets/add-version", json=my_body,
-                                     headers=my_headers)
-            response.raise_for_status()
-        except requests.exceptions.HTTPError as error:
-            print(error)
-    else:
-        print('Error: There is no reference of the secret to be updated')
-
 
 @kopf.on.create('', 'v1', 'secrets', annotations={SYNATOR_SYNC: 'yes'}, when=watch_namespace)
 @kopf.on.update('', 'v1', 'secrets', annotations={SYNATOR_SYNC: 'yes'}, when=watch_namespace)
