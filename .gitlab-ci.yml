@@ -1,5 +1,13 @@
 stages:
   - publish
+  - release
+
+include:
+  # https://github.com/litmuschaos/gitlab-remote-templates
+  - project: 'Xtribe/Web/infrastructure/gcp-deploy'
+    ref: main
+    file:
+      - 'deploy/.gitlab-ci.changelog.yml'
 
 variables:
   DOCKER_TLS_CERTDIR: "/certs"
@@ -11,7 +19,6 @@ before_script:
   - docker info
   - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
 
-
 jobPublishDocker:
   stage: publish
   image: docker:19.03.12
@@ -20,3 +27,13 @@ jobPublishDocker:
   script:
     - docker build -t registry.gitlab.com/xtribe/web/infrastructure/images/synator:latest .
     - docker push registry.gitlab.com/xtribe/web/infrastructure/images/synator:latest
+
+jobRelease:
+  stage: release
+  extends: .gitlab_changelog
+  only:
+      - main
+  except:
+      - tags
+  when: manual
+  dependencies: []
