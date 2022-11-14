@@ -1,4 +1,5 @@
 stages:
+  - test
   - publish
 
 include:
@@ -6,3 +7,14 @@ include:
     ref: 149-gcp-deploy-release-by-channel
     file:
       - 'deploy/.gitlab-ci.infrascanning.yml'
+
+jobSast:
+  stage: test
+  image: returntocorp/semgrep-agent:v1
+  rules:
+    - if: '$CI_COMMIT_TAG =~ /^v?[0-9]+[.][0-9]+([.][0-9]+)?-publish/'
+  script: semgrep-agent
+  variables:
+    SEMGREP_RULES: >-
+      p/security-audit
+      p/secrets
