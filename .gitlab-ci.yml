@@ -4,7 +4,7 @@ stages:
 
 include:
   - project: 'Xtribe/Web/infrastructure/gcp-deploy'
-    ref: main
+    ref: develop_app_version
     file:
       - 'deploy/.gitlab-ci.infrascanning.yml'
 
