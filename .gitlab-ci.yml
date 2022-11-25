@@ -41,7 +41,7 @@ jobTest:
   rules:
     - if: '$CI_COMMIT_TAG =~ /^publish-test$/'
   script:
-    - TAG_VERSION=0.0.1
+    - TAG_VERSION=0.0.1-stable
     - git config --global user.email "$GITLAB_USER_EMAIL"
     - git config --global user.name "$GITLAB_USER_NAME"
     - |
@@ -49,10 +49,4 @@ jobTest:
         echo "test"
         git push --delete origin $TAG_VERSION
         git tag -d $TAG_VERSION
-      fi
-    - git tag $TAG_VERSION
-    - git push origin $TAG_VERSION
-    - |
-      if [ ! -z $UPSTREAM_CI_COMMIT_TAG ]; then
-        git push --delete origin $UPSTREAM_CI_COMMIT_TAG
       fi
