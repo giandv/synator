@@ -33,20 +33,3 @@ jobSastHotfix:
     SEMGREP_RULES: >-
       p/security-audit
       p/secrets
-
-
-jobTest:
-  stage: test
-  image: gcr.io/google.com/cloudsdktool/cloud-sdk:slim
-  rules:
-    - if: '$CI_COMMIT_TAG =~ /^publish-test$/'
-  script:
-    - TAG_VERSION=0.0.1-stable
-    - git config --global user.email "$GITLAB_USER_EMAIL"
-    - git config --global user.name "$GITLAB_USER_NAME"
-    - |
-      if [ $(git tag | grep -w '$TAG_VERSION$' | wc -l) -gt 0 ]; then
-        echo "test"
-        git push --delete origin $TAG_VERSION
-        git tag -d $TAG_VERSION
-      fi
