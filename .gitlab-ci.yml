@@ -28,6 +28,7 @@ jobTest:
     DOCKER_DRIVER: overlay2
     DOCKER_HOST: tcp://docker:2375
     DOCKER_TLS_CERTDIR: ""
+    DOCKER_CLI_EXPERIMENTAL: "enabled"
   rules:
     - if: '$CI_COMMIT_TAG =~ /^v?[0-9]+[.][0-9]+([.][0-9]+)?-test/'
   script:
