@@ -20,6 +20,7 @@ jobSast:
       p/security-audit
       p/secrets
 
+
 jobSastHotfix:
   stage: test
   image: returntocorp/semgrep-agent:v1
