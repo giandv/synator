@@ -32,4 +32,4 @@ jobTest:
     - if: '$CI_COMMIT_TAG =~ /^v?[0-9]+[.][0-9]+([.][0-9]+)?-test/'
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
-    - docker image ls
+    - docker images --all
