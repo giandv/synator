@@ -9,7 +9,6 @@ include:
     file:
       - 'deploy/.gitlab-ci.upstream_infrastructure.yml'
 
-
 jobSast:
   stage: test
   image: returntocorp/semgrep-agent:v1
