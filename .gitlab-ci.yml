@@ -7,27 +7,15 @@ include:
   - project: 'Xtribe/Web/infrastructure/gcp-deploy'
     ref: develop_app_version
     file:
-      - 'deploy/.gitlab-ci.upstream_infrastructure.yml'
+      - 'deploy/.gitlab-ci.upstream-infrastructure.yml'
 
 jobSast:
   stage: test
   image: returntocorp/semgrep-agent:v1
   rules:
     - if: '$CI_COMMIT_TAG =~ /^publish-(major|minor|patch)$/'
-  script: semgrep-agent
-  variables:
-    SEMGREP_RULES: >-
-      p/security-audit
-      p/secrets
-
-jobSastHotfix:
-  stage: test
-  image: returntocorp/semgrep-agent:v1
-  rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /hotfix/ && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "main"'
   script: semgrep-agent
-  when: manual
-  allow_failure: false
   variables:
     SEMGREP_RULES: >-
       p/security-audit
