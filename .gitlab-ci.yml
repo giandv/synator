@@ -5,10 +5,9 @@ stages:
 
 include:
   - project: 'Xtribe/Web/infrastructure/gcp-deploy'
-    ref: develop_app_version
+    ref: main
     file:
       - 'deploy/.gitlab-ci.upstream-infrastructure.yml'
-
 
 jobSast:
   stage: test
