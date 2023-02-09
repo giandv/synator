@@ -12,7 +12,7 @@ SYNATOR_EXCLUDE_NAMESPACES  = 'synator/exclude-namespaces'
 
 
 def watch_namespace(namespace, **_):
-    if EXCLUDE_NAMESPACE == ""
+    if EXCLUDE_NAMESPACE == "":
         return True
     if namespace in all_namespaces:
         return False
