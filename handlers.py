@@ -2,8 +2,8 @@ import kopf
 import kubernetes
 import os
 
-WATCH_NAMESPACE = os.getenv('WATCH_NAMESPACE', "")
-all_namespaces  = WATCH_NAMESPACE.split(',')
+EXCLUDE_NAMESPACE   = os.getenv('EXCLUDE_NAMESPACE', "")
+all_namespaces      = EXCLUDE_NAMESPACE.split(',')
 
 SYNATOR_SYNC                = 'synator/sync'
 SYNATOR_RELOAD              = 'synator/reload'
@@ -12,9 +12,11 @@ SYNATOR_EXCLUDE_NAMESPACES  = 'synator/exclude-namespaces'
 
 
 def watch_namespace(namespace, **_):
-    if WATCH_NAMESPACE == "" or namespace in all_namespaces:
+    if EXCLUDE_NAMESPACE == ""
         return True
-    return False
+    if namespace in all_namespaces:
+        return False
+    return True
 
 @kopf.on.create('', 'v1', 'secrets', annotations={SYNATOR_SYNC: 'yes'}, when=watch_namespace)
 @kopf.on.update('', 'v1', 'secrets', annotations={SYNATOR_SYNC: 'yes'}, when=watch_namespace)
