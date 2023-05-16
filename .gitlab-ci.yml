@@ -2,12 +2,17 @@ stages:
   - test
   - version
   - publish
+  - operations
 
 include:
   - project: 'Xtribe/Web/infrastructure/gcp-deploy'
     ref: main
     file:
       - 'deploy/.gitlab-ci.upstream-infrastructure.yml'
+  - project: 'Xtribe/Web/infrastructure/helm-charts'
+    ref: main
+    file:
+      - '.gitlab-ci.operations.yml'
 
 jobSast:
   stage: test
