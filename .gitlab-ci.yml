@@ -9,6 +9,7 @@ include:
     ref: main
     file:
       - 'deploy/.gitlab-ci.upstream-infrastructure.yml'
+      - 'deploy/.gitlab-ci.vulnerabilities.yml'
   - project: 'Xtribe/Web/infrastructure/helm-charts'
     ref: main
     file:
