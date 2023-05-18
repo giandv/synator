@@ -6,7 +6,7 @@ stages:
 
 include:
   - project: 'Xtribe/Web/infrastructure/gcp-deploy'
-    ref: 204-gcp-deploy-code-quality-dependency-scanning-infrastructure-images
+    ref: main
     file:
       - 'deploy/.gitlab-ci.upstream-infrastructure.yml'
       - 'deploy/.gitlab-ci.vulnerabilities.yml'
