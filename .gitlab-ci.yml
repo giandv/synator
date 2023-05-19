@@ -4,6 +4,9 @@ stages:
   - publish
   - operations
 
+variables:
+  DS_ANALYZER_NAME: "gemnasium-python"
+
 include:
   - project: 'Xtribe/Web/infrastructure/gcp-deploy'
     ref: main
