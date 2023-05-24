@@ -2,12 +2,21 @@ stages:
   - test
   - version
   - publish
+  - operations
+
+variables:
+  DS_ANALYZER_NAME: "gemnasium-python"
 
 include:
   - project: 'Xtribe/Web/infrastructure/gcp-deploy'
     ref: main
     file:
       - 'deploy/.gitlab-ci.upstream-infrastructure.yml'
+      - 'deploy/.gitlab-ci.vulnerabilities.yml'
+  - project: 'Xtribe/Web/infrastructure/helm-charts'
+    ref: main
+    file:
+      - '.gitlab-ci.operations.yml'
 
 jobSast:
   stage: test
