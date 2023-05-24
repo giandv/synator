@@ -28,8 +28,9 @@ def reload_pod_config(body, meta, spec, status, old, new, diff, **kwargs):
                 print("Configmaps reloader:")
                 print(pod.metadata.annotations.get(SYNATOR_RELOAD).split(','))
                 print("Configmap name: " + meta.name)
-                configmaps_reload = pod.metadata.annotations.get(SYNATOR_RELOAD).split(',')
-                if meta.name in configmaps_reload:
+                reload_configuration = pod.metadata.annotations.get(SYNATOR_RELOAD).split(',')
+                find_configmap = "configmap:" + meta.name
+                if meta.name in reload_configuration or find_configmap in reload_configuration:
                     print("Reload pod: " + pod.metadata.name)
                     api.delete_namespaced_pod(pod.metadata.name, pod.metadata.namespace)
     except:
@@ -51,8 +52,9 @@ def reload_pod_secret(body, meta, spec, status, old, new, diff, **kwargs):
                 print("Secrets reloader:")
                 print(pod.metadata.annotations.get(SYNATOR_RELOAD).split(','))
                 print("Secret name: " + meta.name)
-                secrets_reload = pod.metadata.annotations.get(SYNATOR_RELOAD).split(',')
-                if meta.name in secrets_reload:
+                reload_configuration = pod.metadata.annotations.get(SYNATOR_RELOAD).split(',')
+                find_secret = "secret:" + meta.name
+                if meta.name in reload_configuration or find_secret in reload_configuration:
                     print("Reload pod: " + pod.metadata.name)
                     api.delete_namespaced_pod(pod.metadata.name, pod.metadata.namespace)
     except:
