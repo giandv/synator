@@ -22,12 +22,16 @@ def reload_pod_config(body, meta, spec, status, old, new, diff, **kwargs):
         pods = api.list_namespaced_pod(ns)
         print(ns, meta.name)
         for pod in pods.items:
+            print("Pod name: " + pod.metadata.name)
             # Find which pods use this secrets
             if pod.metadata.annotations and pod.metadata.annotations.get(SYNATOR_RELOAD):
-                if any('configmap:' + meta.name in s for s in pod.metadata.annotations.get(SYNATOR_RELOAD).split(',')):
-                    # Reload pod
-                    api.delete_namespaced_pod(
-                        pod.metadata.name, pod.metadata.namespace)
+                print("Configmaps reloader:")
+                print(pod.metadata.annotations.get(SYNATOR_RELOAD).split(','))
+                print("Configmap name: " + meta.name)
+                configmaps_reload = pod.metadata.annotations.get(SYNATOR_RELOAD).split(',')
+                if meta.name in configmaps_reload:
+                    print("Reload pod: " + pod.metadata.name)
+                    api.delete_namespaced_pod(pod.metadata.name, pod.metadata.namespace)
     except:
         sys.exit(0)
 
@@ -41,11 +45,15 @@ def reload_pod_secret(body, meta, spec, status, old, new, diff, **kwargs):
         pods = api.list_namespaced_pod(ns)
         print(ns, meta.name)
         for pod in pods.items:
+            print("Pod name: " + pod.metadata.name)
             # Find which pods use this secrets
             if pod.metadata.annotations and pod.metadata.annotations.get(SYNATOR_RELOAD):
-                if any('secret:' + meta.name in s for s in pod.metadata.annotations.get(SYNATOR_RELOAD).split(',')):
-                    # Reload pod
-                    api.delete_namespaced_pod(
-                        pod.metadata.name, pod.metadata.namespace)
+                print("Secrets reloader:")
+                print(pod.metadata.annotations.get(SYNATOR_RELOAD).split(','))
+                print("Secret name: " + meta.name)
+                secrets_reload = pod.metadata.annotations.get(SYNATOR_RELOAD).split(',')
+                if meta.name in secrets_reload:
+                    print("Reload pod: " + pod.metadata.name)
+                    api.delete_namespaced_pod(pod.metadata.name, pod.metadata.namespace)
     except:
         sys.exit(0)
