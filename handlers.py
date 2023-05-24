@@ -25,7 +25,7 @@ def reload_pod_config(body, meta, spec, status, old, new, diff, **kwargs):
             print("Pod name: " + pod.metadata.name)
             # Find which pods use this secrets
             if pod.metadata.annotations and pod.metadata.annotations.get(SYNATOR_RELOAD):
-                print("Configmaps reloader:")
+                print("Configuration reloader:")
                 print(pod.metadata.annotations.get(SYNATOR_RELOAD).split(','))
                 print("Configmap name: " + meta.name)
                 reload_configuration = pod.metadata.annotations.get(SYNATOR_RELOAD).split(',')
@@ -49,7 +49,7 @@ def reload_pod_secret(body, meta, spec, status, old, new, diff, **kwargs):
             print("Pod name: " + pod.metadata.name)
             # Find which pods use this secrets
             if pod.metadata.annotations and pod.metadata.annotations.get(SYNATOR_RELOAD):
-                print("Secrets reloader:")
+                print("Configuration reloader:")
                 print(pod.metadata.annotations.get(SYNATOR_RELOAD).split(','))
                 print("Secret name: " + meta.name)
                 reload_configuration = pod.metadata.annotations.get(SYNATOR_RELOAD).split(',')
