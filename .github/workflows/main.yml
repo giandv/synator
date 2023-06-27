@@ -1,13 +1,11 @@
 name: GitlabSync
 
 on:
- pull_request:
-    types:
-      - closed
+  - push
   
 jobs:
-  if_merged:
-    if: github.event.pull_request.merged == true
+  sync:
+    if: "contains(github.event.head_commit.message, 'Merge pull request')"
     runs-on: ubuntu-latest
     name: Git Repo Sync
     steps:
