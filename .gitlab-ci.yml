@@ -18,6 +18,8 @@ include:
     file:
       - '.gitlab-ci.operations.yml'
 
+
+# Test GitHub sync
 jobSast:
   stage: test
   image: returntocorp/semgrep-agent:v1
