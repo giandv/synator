@@ -15,8 +15,8 @@ jobs:
     - uses: wangchucheng/git-repo-sync@v0.1.0
       with:
         # Such as https://github.com/wangchucheng/git-repo-sync.git
-        target-url: ${{ secrets.TARGET_URL }}
+        target-url: ${{ vars.TARGET_URL }}
         # Such as wangchucheng
-        target-username: ${{ secrets.TARGET_USERNAME }}
+        target-username: ${{ vars.TARGET_USERNAME }}
           # You can store token in your project's 'Setting > Secrets' and reference the name here. Such as ${{ secrets.ACCESS\_TOKEN }}
-        target-token: ${{ secrets.TARGET_TOKEN }}
+        target-token: ${{ vars.TARGET_TOKEN }}
