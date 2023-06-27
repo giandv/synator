@@ -1,22 +1,31 @@
-name: GitlabSync
+name: 'Git Repo Sync'
+description: 'Git Repo Sync enables you to synchronize code to other code management platforms, such as GitLab, Gitee, etc.'
 
-on:
-  - push
-  - delete
+branding:
+  icon: gitlab
+  color: yellow
 
-jobs:
-  sync:
-    runs-on: ubuntu-latest
-    name: Git Repo Sync
-    steps:
-    - uses: actions/checkout@v2
-      with:
-        fetch-depth: 0
-    - uses: wangchucheng/git-repo-sync@v0.1.0
-      with:
-        # Such as https://github.com/wangchucheng/git-repo-sync.git
-        target-url: ${{ vars.TARGET_URL }}
-        # Such as wangchucheng
-        target-username: ${{ vars.TARGET_USERNAME }}
-          # You can store token in your project's 'Setting > Secrets' and reference the name here. Such as ${{ secrets.ACCESS\_TOKEN }}
-        target-token: ${{ vars.TARGET_TOKEN }}
+inputs:
+  target-url:
+    description: 'Target Repo URL'
+    required: true
+  target-username:
+    description: 'Target Repo Username'
+    required: true
+  target-token:
+    description: 'Target Token'
+    required: true
+  target-branch:
+    descirption: 'Target Branch'
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - run: ${{ github.action_path }}/entrypoint.sh
+      shell: bash
+      env:
+        INPUT_TARGET_URL: ${{ inputs.target-url }}
+        INPUT_TARGET_USERNAME: ${{ inputs.target-username }}
+        INPUT_TARGET_TOKEN: ${{ inputs.target-token }}
+        INPUT_TARGET_BRANCH: ${{ inputs.target-branch }}
+        GITHUB_EVENT_REF: ${{ github.event.ref }}
