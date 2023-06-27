@@ -7,10 +7,10 @@ on:
 
 jobs:
   build:
+    if: github.event.review.state == 'approved'
     runs-on: ubuntu-latest
     name: Git Repo Sync
     steps:
-    - if: github.event.review.state == 'approved'
     - uses: actions/checkout@v2
       with:
         fetch-depth: 0
