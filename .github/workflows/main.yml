@@ -1,12 +1,11 @@
 name: GitlabSync
 
 on:
-  pull_request_review:
-    types: [submitted]
+  - push
   
 jobs:
   build:
-    if: github.event.review.state == 'approved'
+    if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     name: Git Repo Sync
     steps:
