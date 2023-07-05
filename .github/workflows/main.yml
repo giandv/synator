@@ -3,11 +3,10 @@ name: GitlabSync
 on:
   push:
     branches:
-      - develop
-  
+      - main
+
 jobs:
   sync:
-    if: "contains(github.event.head_commit.message, 'Merge pull request')"
     runs-on: ubuntu-latest
     name: Git Repo Sync
     steps:
@@ -17,15 +16,6 @@ jobs:
     - run: |
         INPUT_TARGET_URL=${{ secrets.TARGET_URL }}
         git remote add target https://${{ secrets.TARGET_USERNAME }}:${{ secrets.TARGET_TOKEN }}@${INPUT_TARGET_URL#https://}
-        case "${GITHUB_EVENT_NAME}" in
-            push)
-                git push -f --all target
-                git push -f --tags target
-                ;;
-            delete)
-                git push -d target ${GITHUB_EVENT_REF}
-                ;;
-            *)
-                break
-                ;;
-        esac
+         git branch branch-name
+        git switch branch-name
+        git push -f --all target
