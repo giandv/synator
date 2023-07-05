@@ -21,7 +21,7 @@ include:
 # Test GitHub sync
 # Test Gianluca
 # Test Mirko
-# Test 2
+# Test 2-2
 jobSast:
   stage: test
   image: returntocorp/semgrep-agent:v1
