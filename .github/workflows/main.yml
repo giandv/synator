@@ -2,28 +2,13 @@ name: GitlabSync
 
 on:
   - push
-  
+
 jobs:
   sync:
-    if: "contains(github.event.head_commit.message, 'Merge pull request')"
+    env:
+      commitmsg: ${{ github.event.head_commit.message }}
     runs-on: ubuntu-latest
     name: Git Repo Sync
     steps:
-    - uses: actions/checkout@v2
-      with:
-        fetch-depth: 0
     - run: |
-        INPUT_TARGET_URL=${{ secrets.TARGET_URL }}
-        git remote add target https://${{ secrets.TARGET_USERNAME }}:${{ secrets.TARGET_TOKEN }}@${INPUT_TARGET_URL#https://}
-        case "${GITHUB_EVENT_NAME}" in
-            push)
-                git push -f --all target
-                git push -f --tags target
-                ;;
-            delete)
-                git push -d target ${GITHUB_EVENT_REF}
-                ;;
-            *)
-                break
-                ;;
-        esac
+        echo Commit MSG = ${{ env.commitmsg }}
