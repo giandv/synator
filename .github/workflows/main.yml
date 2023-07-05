@@ -11,7 +11,7 @@ jobs:
     name: Git Repo Sync
     steps:
     - run: |
-        COMMIT_MESSAGE=echo ${{ env.commitmsg }}
+        COMMIT_MESSAGE=$(echo ${{ env.commitmsg }})
         echo $COMMIT_MESSAGE
         BRANCH_TMP=$(echo ${COMMIT_MESSAGE// /_})
         echo $BRANCH_TMP
