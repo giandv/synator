@@ -16,24 +16,5 @@ jobs:
     - run: |
         INPUT_TARGET_URL=${{ secrets.TARGET_URL }}
         git remote add target https://${{ secrets.TARGET_USERNAME }}:${{ secrets.TARGET_TOKEN }}@${INPUT_TARGET_URL#https://}
-        git checkout github_pull_request_${GITHUB_RUN_ID}
-        git push -f --all target
-        PROJECT_API=https://gitlab.com/api/v4/projects/35733793/merge_requests
-        CODE=`curl --write-out '%{http_code}' \
-          --silent \
-          --output /dev/null \
-          --request POST \
-          --header 'content-type: application/json' \
-          --header 'PRIVATE-TOKEN: ${{ secrets.TARGET_TOKEN }}' \
-          --url '$PROJECT_API' \
-          --data '{ \
-            "source_branch": "github_pull_request", \
-            "target_branch": "develop", \
-            "title": "Merge Request from GitHub" \
-          }'`
-        if [ $CODE!="200" ] 
-        then
-            echo "FAILURE"
-        else
-            echo "SUCCESS"
-        fi
+        git checkout -b github_pull_request_${GITHUB_RUN_ID}
+        git push -u target github_pull_request_${GITHUB_RUN_ID} 
