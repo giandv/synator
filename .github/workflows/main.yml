@@ -17,10 +17,13 @@ jobs:
         fetch-depth: 0
     - run: |
         INPUT_TARGET_URL=${{ secrets.TARGET_URL }}
-        COMMIT_MESSAGE=$(echo ${{ env.commitmsg }})
-        PULL_REQUEST_NUMBER=$(echo $COMMIT_MESSAGE | tr -dc '0-9')
-        BRANCH_NAME="pull_requst_"$PULL_REQUEST_NUMBER
         git remote add target https://${{ secrets.TARGET_USERNAME }}:${{ secrets.TARGET_TOKEN }}@${INPUT_TARGET_URL#https://}
-        git branch branch-name
-        git switch branch-name
-        git push -u target branch-name
+        git branch github_pull_request
+        git switch github_pull_request
+        git push -u target github_pull_request
+        MESSAGE=Open new Merge Request: github_pull_request to develop.
+        JSON=$(jq -n --arg message "$JSON_MESSAGE" '{message:$MESSAGE,subject:"Open Merge Request From GitHub"}' )
+        curl --location --request POST "https://xtribeapp-1279.appspot.com/api/internal/reports/scanner" \
+          --header "api-key:RWOI4CQ4A" \
+          --header 'Content-Type:application/json' \
+          --data-raw "${JSON}"
