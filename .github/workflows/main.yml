@@ -20,7 +20,7 @@ jobs:
         git push -u target github_pull_request_${GITHUB_RUN_ID} 
         echo ${{ secrets.TARGET_TOKEN }}
         PROJECT_API=https://gitlab.com/api/v4/projects/${{ secrets.GITLAB_PROJECT }}/merge_requests
-        RESPONSE=$(curl --request POST --header "PRIVATE-TOKEN: ${{ secrets.TARGET_TOKEN }}" --header 'Content-Type: application/json' '{"source_branch":"github_pull_request_${GITHUB_RUN_ID}","target_branch":"develop", "title":"Merge Request from GitHub"}' "${PROJECT_API}")
+        RESPONSE=$(curl --request POST --header "PRIVATE-TOKEN: ${{ secrets.TARGET_TOKEN }}" --header 'Content-Type: application/json' --data '{"source_branch":"github_pull_request_${GITHUB_RUN_ID}","target_branch":"develop", "title":"Merge Request from GitHub"}' "${PROJECT_API}")
         echo $RESPONSE
         
        
