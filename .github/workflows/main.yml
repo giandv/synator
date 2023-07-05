@@ -12,9 +12,13 @@ jobs:
     runs-on: ubuntu-latest
     name: Git Repo Sync
     steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
     - run: |
         COMMIT_MESSAGE=$(echo ${{ env.commitmsg }})
-        BRANCH_TMP=$(echo ${COMMIT_MESSAGE// /_})
-        BRANCH_NAME=$(echo $BRANCH_TMP | tr '[:upper:]' '[:lower:]')
+        PULL_REQUEST_NUMBER=$(echo $COMMIT_MESSAGE | tr -dc '0-9')
+        BRANCH_NAME="pull_requst_"$PULL_REQUEST_NUMBER
+        echo $BRANCH_NAME
         INPUT_TARGET_URL=${{ secrets.TARGET_URL }}
         git remote add target https://${{ secrets.TARGET_USERNAME }}:${{ secrets.TARGET_TOKEN }}@${INPUT_TARGET_URL#https://}
