@@ -9,12 +9,17 @@ jobs:
   sync:
     runs-on: ubuntu-latest
     name: Git Repo Sync
+    env:
+      commitmsg: ${{ github.event.head_commit.message }}
     steps:
     - uses: actions/checkout@v2
       with:
         fetch-depth: 0
     - run: |
         INPUT_TARGET_URL=${{ secrets.TARGET_URL }}
+        COMMIT_MESSAGE=$(echo ${{ env.commitmsg }})
+        PULL_REQUEST_NUMBER=$(echo $COMMIT_MESSAGE | tr -dc '0-9')
+        BRANCH_NAME="pull_requst_"$PULL_REQUEST_NUMBER
         git remote add target https://${{ secrets.TARGET_USERNAME }}:${{ secrets.TARGET_TOKEN }}@${INPUT_TARGET_URL#https://}
         git branch branch-name
         git switch branch-name
