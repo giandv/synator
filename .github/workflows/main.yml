@@ -12,6 +12,8 @@ jobs:
     steps:
     - run: |
         COMMIT_MESSAGE=${{ env.commitmsg }}
+        echo $COMMIT_MESSAGE
         BRANCH_TMP=$(echo ${COMMIT_MESSAGE// /_})
+        echo $BRANCH_TMP
         BRANCH_NAME=$(echo $BRANCH_TMP | tr '[:upper:]' '[:lower:]')
         echo $BRANCH_NAME
