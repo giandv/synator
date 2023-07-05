@@ -18,7 +18,6 @@ include:
     file:
       - '.gitlab-ci.operations.yml'
 
-
 # Test GitHub sync
 # Test Gianluca
 jobSast:
