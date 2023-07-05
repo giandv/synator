@@ -15,5 +15,8 @@ jobs:
         fetch-depth: 0
     - run: |
         INPUT_TARGET_URL=${{ secrets.TARGET_URL }}
-        git remote add develop https://${{ secrets.TARGET_USERNAME }}:${{ secrets.TARGET_TOKEN }}@${INPUT_TARGET_URL#https://}
-        git push -f --all develop
+        git remote add target https://${{ secrets.TARGET_USERNAME }}:${{ secrets.TARGET_TOKEN }}@${INPUT_TARGET_URL#https://}
+        git branch branch-name
+        git switch branch-name
+        git push -u origin branch-name
+        git push -f --all target
