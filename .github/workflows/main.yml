@@ -12,7 +12,7 @@ jobs:
     - uses: actions/checkout@v2
       with:
         fetch-depth: 0
-    - run: ${{ github.action_path }}/entrypoint.sh
+    - run: /entrypoint.sh
       shell: bash
       env:
         # Such as https://github.com/wangchucheng/git-repo-sync.git
