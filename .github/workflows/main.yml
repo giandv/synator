@@ -20,5 +20,21 @@ jobs:
         git switch github_pull_request
         git push -u target github_pull_request
         PROJECT_API=https://gitlab.com/api/v4/projects/35733793/merge_requests
-        RESPONSE_CHANGELOG=$(curl --request POST --header "PRIVATE-TOKEN: ${{ secrets.TARGET_TOKEN }}" --header 'Content-Type: application/json' '{"source_branch":"github_pull_request","target_branch":"develop", "title":"Merge Request from GitHub"}' "${PROJECT_API}")
-        echo $RESPONSE_CHANGELOG
+        CODE=`curl --write-out '%{http_code}' \
+          --silent \
+          --output /dev/null \
+          --request POST \
+          --header 'content-type: application/json' \
+          --header 'PRIVATE-TOKEN: ${{ secrets.TARGET_TOKEN }}' \
+          --url '$PROJECT_API' \
+          --data '{ \
+            "source_branch": "github_pull_request", \
+            "target_branch": "develop", \
+            "title": "Merge Request from GitHub" \
+          }'`
+        if [ $CODE!="200" ] 
+        then
+            echo "FAILURE"
+        else
+            echo "SUCCESS"
+        fi
