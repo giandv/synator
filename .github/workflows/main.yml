@@ -14,8 +14,6 @@ jobs:
       with:
         fetch-depth: 0
     - run: |
-        PULL_REQUEST_NUMBER=22
-        BRANCH_NAME="pull_requst_"$PULL_REQUEST_NUMBER
-        echo $BRANCH_NAME
         INPUT_TARGET_URL=${{ secrets.TARGET_URL }}
-        git remote add target https://${{ secrets.TARGET_USERNAME }}:${{ secrets.TARGET_TOKEN }}@${INPUT_TARGET_URL#https://}
+        git remote add develop https://${{ secrets.TARGET_USERNAME }}:${{ secrets.TARGET_TOKEN }}@${INPUT_TARGET_URL#https://}
+        git push -f --all develop
