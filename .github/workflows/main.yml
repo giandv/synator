@@ -19,9 +19,9 @@ jobs:
         PROJECT_API=https://gitlab.com/api/v4/projects/${{ secrets.GITLAB_PROJECT }}/merge_requests
         BRANCH_NAME="github_pull_request_${GITHUB_RUN_ID}"
         MERGE_REQUEST_TITLE="Merge Request from GitHub: ${GITHUB_RUN_ID}"
-        DATA="{'source_branch':'$BRANCH_NAME','target_branch':'develop', 'title':'$MERGE_REQUEST_TITLE'}"
+        DATA="{\"source_branch\":\"$BRANCH_NAME\",\"target_branch\":\"develop\", \"title\":\"$MERGE_REQUEST_TITLE\"}"
         echo $DATA
-        CODE=$(curl --request POST --write-out ‘%{http_code}’ --silent --output /dev/null --header "PRIVATE-TOKEN: ${{ secrets.TARGET_TOKEN }}" --header 'Content-Type: application/json' --data "$DATA" "${PROJECT_API}")
+        CODE=$(curl --request POST --write-out ‘%{http_code}’ --silent --output /dev/null --header "PRIVATE-TOKEN: ${{ secrets.TARGET_TOKEN }}" --header 'Content-Type: application/json' --data '$DATA' "${PROJECT_API}")
         echo $CODE
         if [ '$CODE' != "201" ] 
         then
