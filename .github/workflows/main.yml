@@ -7,8 +7,6 @@ jobs:
   sync:
     runs-on: ubuntu-latest
     name: Git Repo Sync
-    env:
-      commitmsg: ${{ github.event.head_commit.message }}
     steps:
     - uses: actions/checkout@v2
       with:
@@ -18,10 +16,9 @@ jobs:
         git remote add target https://${{ secrets.TARGET_USERNAME }}:${{ secrets.TARGET_TOKEN }}@${INPUT_TARGET_URL#https://}
         git checkout -b github_pull_request_${GITHUB_RUN_ID}
         git push -u target github_pull_request_${GITHUB_RUN_ID} 
-        echo ${{ secrets.TARGET_TOKEN }}
         PROJECT_API=https://gitlab.com/api/v4/projects/${{ secrets.GITLAB_PROJECT }}/merge_requests
-        BRANCH_NAME=github_pull_request_${GITHUB_RUN_ID}
-        TITLE=Merge Request from GitHub: ${GITHUB_RUN_ID}
+        BRANCH_NAME="github_pull_request_${GITHUB_RUN_ID}"
+        TITLE="Merge Request from GitHub: ${GITHUB_RUN_ID}"
         CODE=$(curl --request POST --write-out ‘%{http_code}’ --silent --output /dev/null --header "PRIVATE-TOKEN: ${{ secrets.TARGET_TOKEN }}" --header 'Content-Type: application/json' --data '{"source_branch":"${BRANCH_NAME}","target_branch":"develop", "title":"${TITLE}"}' "${PROJECT_API}")
         echo $CODE
         if [ '$CODE' != "201" ] 
