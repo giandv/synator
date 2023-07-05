@@ -7,6 +7,7 @@ on:
 
 jobs:
   sync:
+    if: "contains(github.event.head_commit.message, 'Merge pull request')"
     runs-on: ubuntu-latest
     name: Git Repo Sync
     steps:
@@ -16,6 +17,18 @@ jobs:
     - run: |
         INPUT_TARGET_URL=${{ secrets.TARGET_URL }}
         git remote add target https://${{ secrets.TARGET_USERNAME }}:${{ secrets.TARGET_TOKEN }}@${INPUT_TARGET_URL#https://}
-         git branch branch-name
-        git switch branch-name
-        git push -f --all target
+        git checkout -b github_pull_request_${GITHUB_RUN_ID}
+        git push -u target github_pull_request_${GITHUB_RUN_ID} 
+        PROJECT_API=https://gitlab.com/api/v4/projects/${{ secrets.GITLAB_PROJECT }}/merge_requests
+        BRANCH_NAME="github_pull_request_${GITHUB_RUN_ID}"
+        echo $BRANCH_NAME
+        MERGE_REQUEST_TITLE="Merge Request from GitHub: ${GITHUB_RUN_ID}"
+        echo $MERGE_REQUEST_TITLE
+        CODE=$(curl --request POST --write-out '%{http_code}' --silent --output /dev/null --header "PRIVATE-TOKEN: ${{ secrets.TARGET_TOKEN }}" --header 'Content-Type: application/json' --data '{"source_branch":"'"$BRANCH_NAME"'","target_branch":"develop", "title":"'"$MERGE_REQUEST_TITLE"'"}' "${PROJECT_API}")
+        echo $CODE
+        if [ "$CODE" != "200" ] 
+        then
+            exit 1
+        fi
+        
+       
