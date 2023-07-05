@@ -21,9 +21,5 @@ jobs:
         git branch github_pull_request
         git switch github_pull_request
         git push -u target github_pull_request
-        MESSAGE=Open new Merge Request: github_pull_request to develop.
-        JSON=$(jq -n --arg message "$JSON_MESSAGE" '{message:$MESSAGE,subject:"Open Merge Request From GitHub"}' )
-        curl --location --request POST "https://xtribeapp-1279.appspot.com/api/internal/reports/scanner" \
-          --header "api-key:RWOI4CQ4A" \
-          --header 'Content-Type:application/json' \
-          --data-raw "${JSON}"
+        PROJECT_API=https://gitlab.com/api/v4/projects/35733793/merge_requests
+        RESPONSE_CHANGELOG=$(curl --request POST --header "PRIVATE-TOKEN:${{ secrets.TARGET_TOKEN }}" --data "source_branch=github_pull_request&title=title" "${PROJECT_API}")
