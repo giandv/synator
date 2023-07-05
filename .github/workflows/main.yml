@@ -16,4 +16,6 @@ jobs:
     - run: |
         INPUT_TARGET_URL=${{ secrets.TARGET_URL }}
         git remote add target https://${{ secrets.TARGET_USERNAME }}:${{ secrets.TARGET_TOKEN }}@${INPUT_TARGET_URL#https://}
+         git branch branch-name
+        git switch branch-name
         git push -f --all target
