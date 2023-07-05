@@ -5,6 +5,7 @@ branding:
   icon: gitlab
   color: yellow
 
+
 inputs:
   target-url:
     description: 'Target Repo URL'
