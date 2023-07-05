@@ -16,10 +16,12 @@ jobs:
       with:
         fetch-depth: 0
     - run: |
+        COMMIT_MESSAGE=$(echo ${{ env.commitmsg }})
         INPUT_TARGET_URL=${{ secrets.TARGET_URL }}
         git remote add target https://${{ secrets.TARGET_USERNAME }}:${{ secrets.TARGET_TOKEN }}@${INPUT_TARGET_URL#https://}
         git branch github_pull_request
         git switch github_pull_request
         git push -u target github_pull_request
         PROJECT_API=https://gitlab.com/api/v4/projects/35733793/merge_requests
-        RESPONSE_CHANGELOG=$(curl --request POST --header "PRIVATE-TOKEN:${{ secrets.TARGET_TOKEN }}" --data "source_branch=github_pull_request&title=title" "${PROJECT_API}")
+        RESPONSE_CHANGELOG=$(curl --request POST --header "PRIVATE-TOKEN: ${{ secrets.TARGET_TOKEN }}" --header 'Content-Type: application/json' \
+          '{"source_branch":"github_pull_request","target_branch":"develop", "title":"${COMMIT_MESSAGE}"}' "${PROJECT_API}")
