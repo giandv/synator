@@ -13,7 +13,8 @@ jobs:
       with:
         fetch-depth: 0
     - run: |
-        git remote add target https://${{ secrets.TARGET_USERNAME }}:${{ secrets.TARGET_TOKEN }}@${secrets.TARGET_URL#https://}
+        INPUT_TARGET_URL=${{ secrets.TARGET_URL }}
+        git remote add target https://${{ secrets.TARGET_USERNAME }}:${{ secrets.TARGET_TOKEN }}@${INPUT_TARGET_URL#https://}
         case "${GITHUB_EVENT_NAME}" in
             push)
                 git push -f --all target
